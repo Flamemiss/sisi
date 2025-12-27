@@ -1,0 +1,11 @@
+# API配置（包含密钥）
+config.py
+
+# Python
+__pycache__/
+*.pyc
+.env
+
+# IDE
+.vscode/
+.idea/

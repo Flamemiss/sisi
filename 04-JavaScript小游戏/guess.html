@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>猜数字游戏</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .game-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            color: white;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+        }
+        
+        input {
+            width: 100px;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+        
+        .message {
+            font-size: 20px;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .history {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-box">
+        <h1>🎮 猜数字游戏</h1>
+        <p>我想了一个1-100之间的数字，猜猜是多少？</p>
+        
+        <input type="number" id="guessInput" min="1" max="100" placeholder="?">
+        
+        <div>
+            <button class="btn-primary" onclick="checkGuess()">猜一猜</button>
+            <button class="btn-secondary" onclick="resetGame()">重新开始</button>
+        </div>
+        
+        <div class="message" id="message"></div>
+        
+        <div class="history">
+            <p>已猜次数: <span id="attempts">0</span></p>
+            <p>猜过的数: <span id="history">-</span></p>
+        </div>
+    </div>
+
+    <script>
+        // 游戏变量
+        let secretNumber;
+        let attempts;
+        let guessHistory;
+        
+        // 初始化游戏
+        function initGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            guessHistory = [];
+            document.getElementById('message').textContent = '';
+            document.getElementById('attempts').textContent = '0';
+            document.getElementById('history').textContent = '-';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+        }
+        
+        // 检查猜测
+        function checkGuess() {
+            const input = document.getElementById('guessInput');
+            const guess = parseInt(input.value);
+            
+            // 验证输入
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                showMessage('请输入1-100之间的数字！', '#ffd700');
+                return;
+            }
+            
+            // 记录猜测
+            attempts++;
+            guessHistory.push(guess);
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('history').textContent = guessHistory.join(', ');
+            
+            // 判断结果
+            if (guess === secretNumber) {
+                showMessage(`🎉 恭喜！答案就是 ${secretNumber}！用了 ${attempts} 次`, '#00ff00');
+                input.disabled = true;
+            } else if (guess < secretNumber) {
+                showMessage('📈 太小了，再大一点！', '#ffd700');
+            } else {
+                showMessage('📉 太大了，再小一点！', '#ffd700');
+            }
+            
+            input.value = '';
+            input.focus();
+        }
+        
+        // 显示消息
+        function showMessage(text, color) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.style.color = color;
+        }
+        
+        // 重新开始
+        function resetGame() {
+            initGame();
+            showMessage('新游戏开始！', 'white');
+        }
+        
+        // 回车键提交
+        document.getElementById('guessInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkGuess();
+            }
+        });
+        
+        // 启动游戏
+        initGame();
+    </script>
+</body>
+</html>
